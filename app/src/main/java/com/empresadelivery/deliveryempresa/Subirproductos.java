@@ -87,6 +87,7 @@ public class Subirproductos extends AppCompatActivity {
         setContentView(R.layout.activity_subirproductos);
 foto_gallery=(ImageView)findViewById(R.id.foto);
 precioproducto=(TextView)findViewById(R.id.precio);
+descripcionproducto=(TextView)findViewById(R.id.descripcion);
         nombreproducto=(TextView)findViewById(R.id.nombreproducto);
         ingredientes=(TextView)findViewById(R.id.ingredientes);
 almacen =(Spinner) findViewById(R.id.spinnerio);
@@ -171,7 +172,7 @@ guardarproducto.setOnClickListener(new View.OnClickListener() {
 
                                 //pdLoading.dismiss();
                                 Productoguardar pg=new Productoguardar(0,nombreproducto.getText().toString(),"1",Double.parseDouble(precioproducto.getText().toString())
-                                        ,"no",Integer.parseInt(idfamilia),Double.parseDouble("0"),imageUrl,"no hay","sin foto","sin qr"
+                                        ,"no",Integer.parseInt(idfamilia),Double.parseDouble(descripcionproducto.getText().toString()),imageUrl,"no hay","sin foto","sin qr"
                                 ,1,ingredientes.getText().toString(),Integer.parseInt(idalmacen));
                                 new grabarproducto().execute(pg);
 

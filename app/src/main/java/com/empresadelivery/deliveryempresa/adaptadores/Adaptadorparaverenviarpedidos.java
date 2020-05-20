@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.empresadelivery.deliveryempresa.R;
 import com.empresadelivery.deliveryempresa.modelos.DetallepedidoRealmFirebase;
-import com.empresadelivery.deliveryempresa.modelos.DetallepedidoRealmFirebase;
 
 import java.util.ArrayList;
 import java.util.List;

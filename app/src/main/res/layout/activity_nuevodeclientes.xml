@@ -30,11 +30,11 @@
                 android:layout_width="284dp"
                 android:layout_height="58dp"
                 android:layout_marginLeft="13dp"
-                android:hint="Busca un producto"
+                android:hint="Busca un Cliente"
                 tools:ignore="LabelFor" />
 
             <Button
-                android:id="@+id/nuevoproductito"
+                android:id="@+id/nuevocliente"
                 android:layout_width="61dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
@@ -46,7 +46,7 @@
                 android:background="@drawable/nuevob" />
 
             <Button
-                android:id="@+id/todos"
+                android:id="@+id/todoslosclientes"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_horizontal|center_vertical"
@@ -59,7 +59,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recymaestraproductos"
+            android:id="@+id/recyclerdeclientes"
             android:layout_width="match_parent"
             android:layout_height="613dp"
             android:layout_marginLeft="5dp"
@@ -81,7 +81,7 @@
             app:layout_constraintVertical_bias="1.0">
 
             <Button
-                android:id="@+id/cremas"
+                android:id="@+id/cremashh"
                 android:layout_width="wrap_content"
                 android:layout_height="27dp"
                 android:layout_gravity="center_horizontal|center_vertical"
@@ -91,12 +91,12 @@
                 android:layout_weight="1"
                 android:background="@color/trans"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Cremas"
+                android:text="Cremashh"
                 android:textColor="@color/colortres"
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/adicionales"
+                android:id="@+id/adicionaleshh"
                 android:layout_width="wrap_content"
                 android:layout_height="27dp"
                 android:layout_gravity="center_horizontal|center_vertical"
@@ -106,7 +106,7 @@
                 android:layout_weight="1"
                 android:background="@color/trans"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Adicional"
+                android:text="Adicionalhh"
                 android:textColor="@color/colortres"
                 android:textSize="18sp" />
 

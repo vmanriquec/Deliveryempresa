@@ -1,5 +1,6 @@
 package com.empresadelivery.deliveryempresa;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,7 +41,7 @@ public class Manejodeusuarios extends AppCompatActivity {
     private RecyclerView.LayoutManager lManager;
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
-
+    ArrayList<String> dataList;
     Button todos,nuevo;
 
     @Override
@@ -48,9 +49,6 @@ public class Manejodeusuarios extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manejodeusuarios);
         todos=(Button)findViewById(R.id.todos);
-
-
-
 
         MultiAutoCompleteTextView myMultiAutoCompleteTextView
                 = (MultiAutoCompleteTextView)findViewById(
@@ -104,10 +102,14 @@ public class Manejodeusuarios extends AppCompatActivity {
         URL url = null;
         ArrayList<Usuario> listaalmaceno = new ArrayList<Usuario>();
         RecyclerView recycler = (RecyclerView) findViewById(R.id.listadeclientes);
+        ProgressDialog pdLoading = new ProgressDialog(Manejodeusuarios.this);
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
+            pdLoading.setMessage("\tCargando cliente por nombre");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
 
         }
 
@@ -205,12 +207,14 @@ public class Manejodeusuarios extends AppCompatActivity {
                     JSONArray jArray = new JSONArray(result);
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.optJSONObject(i);
-                        meso = new Usuario(json_data.getInt("idusuario"), json_data.getString("nombreusuario"), json_data.getString("claveusuario")
-                                , json_data.getString("estadousuario"),json_data.getInt(("idalmacen")),json_data.getString("idfacebook"),
-                                json_data.getString("nombrefacebook"),json_data.getString("imagen")
-                                ,json_data.getString("apellidos"),json_data.getString("idfirebase"),json_data.getString("telefono"),
-                                json_data.getString("contrasena"),json_data.getString("correo"),json_data.getString("direccion"),json_data.getString("longitud")
-                        ,json_data.getString("latitud"),json_data.getString("referencia"));
+
+                        meso = new  Usuario(json_data.getInt("idusuario"), json_data.getString("nombreusuario"), json_data.getString("claveusuario")
+                                , json_data.getString("estadousuario"),json_data.getInt(("idalmacen")),json_data.getString("montodescuento")
+                                , json_data.getString("nombredescuento"),json_data.getString("imagen")
+                                ,json_data.getString("apellidos"),json_data.getString("idfirebase")  ,json_data.getString("telefono"),
+                                json_data.getString("contrasena"),json_data.getString("correo"),json_data.getString("direccion"),
+                                json_data.getString("longitud")
+                                ,json_data.getString("latitud"),json_data.getString("referencia"));
                         people.add(meso);
                     }
                     strArrData = dataList.toArray(new String[dataList.size()]);
@@ -223,21 +227,24 @@ public class Manejodeusuarios extends AppCompatActivity {
 
                 }
             }
+            pdLoading.dismiss();
         }
     }
 
     private class llenarautocomplete extends AsyncTask<String, String, String> {
         ArrayList<Usuario> people=new ArrayList<>();
         private String[] strArrData = {"No Suggestions"};
-
+        ProgressDialog pdLoading = new ProgressDialog(Manejodeusuarios.this);
         HttpURLConnection conne;
         URL url = null;
         ArrayList<Usuario> listaalmaceno = new ArrayList<Usuario>();
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
+            pdLoading.setMessage("\tllenando combo");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
 
         }
 
@@ -322,35 +329,31 @@ public class Manejodeusuarios extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             ArrayList<String> mylist = new ArrayList<String>();
+            String[] strArrData = {"No Suggestions"};
             people.clear();
-
-
             ArrayList<String> dataList = new ArrayList<String>();
             Usuario meso;
             if(result.equals("no rows")) {
                 Toast.makeText(Manejodeusuarios.this.getApplicationContext(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
-
             }else{
-
                 try {
-
-
+                    Log.d("pasolito",result.toString());
                     JSONArray jArray = new JSONArray(result);
-
 
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.optJSONObject(i);
-
-                        meso = new Usuario(json_data.getInt("idusuario"), json_data.getString("nombreusuario"), json_data.getString("claveusuario")
-                                , json_data.getString("estadousuario"),json_data.getInt(("idalmacen")),json_data.getString("idfacebook"),
-                                json_data.getString("nombrefacebook"),json_data.getString("imagen")
-                                ,json_data.getString("apellidos"),json_data.getString("idfirebase"),json_data.getString("telefono"),
-                                json_data.getString("contrasena"),json_data.getString("correo"),json_data.getString("direccion"),json_data.getString("longitud")
+                        meso = new  Usuario(json_data.getInt("idusuario"), json_data.getString("nombreusuario"), json_data.getString("claveusuario")
+                                , json_data.getString("estadousuario"),json_data.getInt(("idalmacen")),json_data.getString("montodescuento")
+                                , json_data.getString("nombredescuento"),json_data.getString("imagen")
+                                ,json_data.getString("apellidos"),json_data.getString("idfirebase")  ,json_data.getString("telefono"),
+                                json_data.getString("contrasena"),json_data.getString("correo"),json_data.getString("direccion"),
+                                json_data.getString("longitud")
                                 ,json_data.getString("latitud"),json_data.getString("referencia"));
+
                         people.add(meso);
+                        Log.d("pasopoo", people.toString());
 
                         mylist.add(json_data.getString("nombreusuario"));
-
                     }
                     strArrData = dataList.toArray(new String[dataList.size()]);
 
@@ -368,31 +371,27 @@ public class Manejodeusuarios extends AppCompatActivity {
                 } catch (JSONException e) {
                     Log.d("pasol",e.toString());
                 }
-
             }
-
+            pdLoading.dismiss();
         }
-
     }
 
     private class traerproductosporidalmacenidfamilia extends AsyncTask<String, String, String> {
-        ArrayList<Usuario> people=new ArrayList<>();
+        ArrayList<Usuario> people = new ArrayList<>();
         private String[] strArrData = {"No Suggestions"};
-
+        ProgressDialog pdLoading = new ProgressDialog(Manejodeusuarios.this);
         HttpURLConnection conne;
         URL url = null;
         ArrayList<Usuario> listaalmaceno = new ArrayList<Usuario>();
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
+            pdLoading.setMessage("\tCargando todos");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
         }
-
         @Override
         protected String doInBackground(String... params) {
-
             try {
                 url = new URL("https://sodapop.pe/sugest/apitraerclientesmaestra.php");
             } catch (MalformedURLException e) {
@@ -407,18 +406,10 @@ public class Manejodeusuarios extends AppCompatActivity {
                 conne.setRequestMethod("POST");
                 conne.setDoInput(true);
                 conne.setDoOutput(true);
-
                 // Append parameters to URL
-
-
-
                 Uri.Builder builder = new Uri.Builder()
-
-                        .appendQueryParameter("idusuario", params[0])
-                        ;
-
+               .appendQueryParameter("idusuario", params[0]);
                 String query = builder.build().getEncodedQuery();
-
                 // Open connection for sending data
                 OutputStream os = conne.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
@@ -428,7 +419,6 @@ public class Manejodeusuarios extends AppCompatActivity {
                 writer.close();
                 os.close();
                 conne.connect();
-
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -441,31 +431,23 @@ public class Manejodeusuarios extends AppCompatActivity {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                     StringBuilder result = new StringBuilder();
                     String line;
-
                     while ((line = reader.readLine()) != null) {
                         result.append(line);
-
                     }
                     return (
-
                             result.toString()
-
-
                     );
-
                 } else {
-                    return("Connection error");
+                    return ("Connection error");
                 }
             } catch (IOException e) {
-                e.printStackTrace()                ;
-                Log.d("pasoe",e.toString());
+                e.printStackTrace();
+                Log.d("pasoe", e.toString());
                 return e.toString();
             } finally {
                 conne.disconnect();
             }
         }
-
-
         @Override
         protected void onPostExecute(String result) {
 
@@ -475,50 +457,39 @@ public class Manejodeusuarios extends AppCompatActivity {
 
             ArrayList<String> dataList = new ArrayList<String>();
             Usuario meso;
-            if(result.equals("no rows")) {
-                Toast.makeText(Manejodeusuarios.this.getApplicationContext(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+            if (result.equals("no rows")) {
+                Toast.makeText(Manejodeusuarios.this.getApplicationContext(), "no existen datos a mostrar", Toast.LENGTH_LONG).show();
 
-            }else{
-
+            } else {
+                Log.d("pasoresu", result.toString());
                 try {
 
-
                     JSONArray jArray = new JSONArray(result);
-
-
                     for (int i = 0; i < jArray.length(); i++) {
                         JSONObject json_data = jArray.optJSONObject(i);
-
-                        meso = new  Usuario(json_data.getInt("idusuario"), json_data.getString("nombreusuario"), json_data.getString("claveusuario")
-                                , json_data.getString("estadousuario"),json_data.getInt(("idalmacen")),json_data.getString("idfacebook")
-                               , json_data.getString("nombrefacebook"),json_data.getString("imagen")
-                                ,json_data.getString("apellidos"),json_data.getString("idfirebase")  ,json_data.getString("telefono"),
-                                json_data.getString("contrasena"),json_data.getString("correo"),json_data.getString("direccion"),
+                        meso = new Usuario(json_data.getInt("idusuario"), json_data.getString("nombreusuario"), json_data.getString("claveusuario")
+                                , json_data.getString("estadousuario"), json_data.getInt(("idalmacen")), json_data.getString("montodescuento")
+                                , json_data.getString("nombredescuento"), json_data.getString("imagen")
+                                , json_data.getString("apellidos"), json_data.getString("idfirebase"), json_data.getString("telefono"),
+                                json_data.getString("contrasena"), json_data.getString("correo"), json_data.getString("direccion"),
                                 json_data.getString("longitud")
-                                ,json_data.getString("latitud"),json_data.getString("referencia"));
-
-
+                                , json_data.getString("latitud"), json_data.getString("referencia"));
 
                         people.add(meso);
-
                     }
+
                     strArrData = dataList.toArray(new String[dataList.size()]);
-
-
-                    adapter = new Adaptadorclientes(people,Manejodeusuarios.this.getApplicationContext());
+                    adapter = new Adaptadorclientes(people, Manejodeusuarios.this.getApplicationContext());
                     recycler.setLayoutManager(new GridLayoutManager(Manejodeusuarios.this.getApplicationContext(), 1));
-
                     recycler.setAdapter(adapter);
-
-
                 } catch (JSONException e) {
-                    Log.d("paso",e.toString());
+                    Log.d("paso", e.toString());
                 }
-
             }
+            pdLoading.dismiss();
 
         }
 
-    }
 
-}
+    }}
+

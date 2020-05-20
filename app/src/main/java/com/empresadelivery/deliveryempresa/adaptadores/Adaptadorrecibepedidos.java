@@ -42,7 +42,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-
 public class Adaptadorrecibepedidos extends RecyclerView.Adapter<Adaptadorrecibepedidos.AdaptadorViewHolder>  {
     private MainActivity mainContext;
     String foto;

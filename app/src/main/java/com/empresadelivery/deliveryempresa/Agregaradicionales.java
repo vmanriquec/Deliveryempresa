@@ -79,10 +79,6 @@ Switch estadocrema;
 listo.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-
-
-
-
         Intent ListSong = new Intent(getApplicationContext(), Listaproductos.class);
         startActivity(ListSong);
 
@@ -389,11 +385,7 @@ listo.setOnClickListener(new View.OnClickListener() {
                         String q=peopleadicional.get(numerodeadiciones).getNombreadicional();
                         Double l=peopleadicional.get(numerodeadiciones).getPrecioadicional();
                         final int ida=peopleadicional.get(numerodeadiciones).getIdadicional();
-
-
-
-
-                        cb.setId(numerodeadiciones);
+                   cb.setId(numerodeadiciones);
                         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                             @Override

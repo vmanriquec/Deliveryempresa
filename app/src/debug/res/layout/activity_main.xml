@@ -3,30 +3,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorprincipalamarillo"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <RadioGroup
+            android:id="@+id/todoradio"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/activas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Activo" />
+
+            <RadioButton
+                android:id="@+id/entregada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Entregada" />
+
+            <RadioButton
+                android:id="@+id/rechazada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Rechazada" />
+
+            <RadioButton
+                android:id="@+id/todasordenes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Todas" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/buscarpedido"
+            android:layout_width="46dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/places_ic_search" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="0dp"
-        android:layout_height="675dp"
+        android:layout_width="406dp"
+        android:layout_height="618dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintHorizontal_bias="0.242"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
+        app:layout_constraintVertical_bias="0.579" />
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
         android:background="@drawable/btn_orange_2"
         android:gravity="center_horizontal|left"
         android:orientation="horizontal"
@@ -39,78 +97,33 @@
 
         <Button
             android:id="@+id/refresca"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
+            android:layout_width="184dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/fondoparabuscar"
+            android:background="@color/trans"
             android:gravity="center_horizontal|center_vertical"
             android:text="Productos"
-            android:textColor="@color/coloruno"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/familia"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/fondoparabuscar"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Familia"
-            android:textColor="@color/coloruno"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/cremas"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_background"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Cremas"
             android:textColor="@color/colortres"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/adicionales"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_background"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Adicional"
-            android:textColor="@color/colortres"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/clientes"
             android:layout_width="wrap_content"
-            android:layout_height="27dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
             android:layout_weight="1"
-            android:background="@drawable/button_background"
+            android:background="@color/trans"
             android:gravity="center_horizontal|center_vertical"
             android:text="Clientes"
             android:textColor="@color/colortres"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
 
     </LinearLayout>

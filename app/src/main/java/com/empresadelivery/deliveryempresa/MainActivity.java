@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +28,11 @@ import com.empresadelivery.deliveryempresa.modelos.CremaRealm;
 import com.empresadelivery.deliveryempresa.modelos.CremaRealmFirebase;
 import com.empresadelivery.deliveryempresa.modelos.CrudadicionalRealm;
 import com.empresadelivery.deliveryempresa.modelos.CrudcremaRealm;
+import com.empresadelivery.deliveryempresa.modelos.CruddescuentosRealm;
 import com.empresadelivery.deliveryempresa.modelos.Crudetallepedido;
 import com.empresadelivery.deliveryempresa.modelos.Crudpedido;
+import com.empresadelivery.deliveryempresa.modelos.Descuentos;
+import com.empresadelivery.deliveryempresa.modelos.DescuentosRealm;
 import com.empresadelivery.deliveryempresa.modelos.DetallepedidoRealmFirebase;
 import com.empresadelivery.deliveryempresa.modelos.Detallepedidorealm;
 import com.empresadelivery.deliveryempresa.modelos.PedidoRealm;
@@ -68,12 +74,11 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<CremaRealmFirebase> todaslascremas = new ArrayList<>();
     public ArrayList<AdicionalRealmFirebase> todoslosadicionales = new ArrayList<>();
     ArrayList<PedidoRealmFirebase> pb = new ArrayList<PedidoRealmFirebase>();
-
+    RadioButton activos,rechazados,entregados,todos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         SharedPreferences prefs;
         String FileName = "myfile";
 
@@ -119,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mMediaPlayer.start();
 
+                new cargardescuentos().execute();
 
             }
 
@@ -148,7 +154,48 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+Button buscarorden=(Button) findViewById(R.id.buscarpedido);
 
+
+buscarorden.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        activos=(RadioButton)findViewById(R.id.activas);
+        rechazados=(RadioButton)findViewById(R.id.rechazada);
+        todos=(RadioButton)findViewById(R.id.todasordenes);
+        entregados=(RadioButton)findViewById(R.id.entregada);
+        RadioGroup todoradio=(RadioGroup) findViewById(R.id.todoradio);
+        todoradio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+
+                switch (checkedId){
+
+
+                    case R.id.activas:
+
+                        new traerpedidos().execute("1");
+
+                        break;
+                    case R.id.rechazada:
+                        new traerpedidosrechazados().execute();
+                        break;
+
+                    case R.id.todasordenes:
+                        break;
+
+                    case R.id.entregada:
+                        new traerpedidosentregados().execute();
+
+                        break;
+
+                }
+            }
+        });
+
+    }
+});
     }
 
     private void eliminartododerealm() {
@@ -787,7 +834,430 @@ for(int a=0;a<ere;a++){
         }
 
     }
+    private class cargardescuentos extends AsyncTask<String, String, String> {
+
+        ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
+        HttpURLConnection conn;
+        URL url = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pdLoading.setMessage("\tCargando Descuentos");
+            pdLoading.setCancelable(false);
+            pdLoading.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("https://www.sodapop.pe/sugest/apitraertodoslosdescuentos.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(READ_TIMEOUT);
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setRequestMethod("GET");
+                conn.setDoOutput(true);
+                conn.connect();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conn.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+                    return (result.toString());
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                return e.toString();
+            } finally {
+                conn.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+
+
+            Descuentos mes;
+            if(result.equals("no rows")) {
+                Toast.makeText(getApplicationContext(),"no existen datos a mostrar",Toast.LENGTH_LONG).show();
+
+            }else{
+
+                try {
+
+                    JSONArray jArray = new JSONArray(result);
+
+                    for (int i = 0; i < jArray.length(); i++) {
+                        JSONObject json_data = jArray.getJSONObject(i);
+                        mes = new Descuentos(json_data.getInt("idvaledescuento"), json_data.getString("nombredescuento"), json_data.getString("montodescuento"), json_data.getString("estadodescuento"));
+                        grabatodoslosdecuentos(mes.getIdvaledescuento(),mes.getNombredescuento(),mes.getMontodescuento(),mes.getEstadodescuento());
+                    }
+
+
+
+
+
+                } catch (JSONException e) {
+                }
+
+            }
+            pdLoading.dismiss();
+
+
+        }
+
+    }
+
+    public   void grabatodoslosdecuentos(final int idvaledescuento, final String nombredescuento
+            , final String montodescuento, final String estadodescuento) {
+        Realm pedido = Realm.getDefaultInstance();
+        pedido.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm pedido) {
+                int index = CruddescuentosRealm.calculateIndex();
+
+                DescuentosRealm descuentorealm = pedido.createObject(DescuentosRealm.class, index);
+                descuentorealm.setIdvaledescuento(idvaledescuento);
+                descuentorealm.setNombredescuento(nombredescuento);
+                descuentorealm.setMontodescuento(montodescuento);
+                descuentorealm.setEstadodescuento(estadodescuento);
+
+            }
+
+        });
 
     }
 
 
+    public class traerpedidosrechazados extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("https://sodapop.pe/sugest/traertodoslospedidosrechazados.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("nombre", params[0]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("waaaaaaa",result);
+            //if(result.equals("no rows")) {
+            //}else{
+
+            //}
+            try {
+                JSONArray jArray = new JSONArray(result);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    PedidoRealmFirebase   pedidofirebase = new PedidoRealmFirebase
+                            (json_data.getInt("idpedido"),
+                                    json_data.getInt("idcliente"),
+                                    json_data.getInt("idmesa")
+                                    , json_data.getDouble("totalpedido")
+                                    ,json_data.getString("estadopedido"),
+                                    json_data.getString("fechapedido")
+                                    ,json_data.getInt("idusuario"),
+                                    json_data.getInt("idalmacen"),
+                                    json_data.getString("idfacebook"),
+                                    json_data.getString("observaciones")
+                                    ,json_data.getString("llevar")
+                                    ,json_data.getString("direccionllevar"),
+                                    json_data.getString("idfirebase"),
+                                    json_data.getString("monbredescuento")
+                                    ,json_data.getString("montodescuento")
+                                    ,json_data.getString("nombrecosto"),
+                                    json_data.getString("montocosto"),
+                                    json_data.getString("longitud")
+                                    ,json_data.getString("latitud"),
+                                    json_data.getString("pagocliente"),
+                                    json_data.getString("vuelto")
+                                    ,json_data.getString("telefono"),
+                                    json_data.getString("refrencias"),
+                                    json_data.getString("nombreusuariof"),
+                                    json_data.getString("idfacebook"));
+                    todoslospedidos.add(pedidofirebase);
+
+
+                }
+
+
+
+                int ere =todoslospedidos.size();
+
+                for(int a=0;a<ere;a++){
+
+                    realgrabarpedido(
+                            todoslospedidos.get(a).getIdpedido(),
+                            todoslospedidos.get(a).getIdcliente(),
+                            todoslospedidos.get(a).getIdmesa()
+                            ,todoslospedidos.get(a).getTotalpedido(),
+                            todoslospedidos.get(a).getEstadopedido(),
+                            todoslospedidos.get(a).getFechapedido()
+                            ,todoslospedidos.get(a).getIdusuario(),
+                            todoslospedidos.get(a).getIdalmacen()
+                            ,todoslospedidos.get(a).getIdfacebook()
+                            ,todoslospedidos.get(a).getDescripcionpedido(),
+                            todoslospedidos.get(a).getLlevar(),
+                            todoslospedidos.get(a).getDireccionallevar());
+                }
+                final RecyclerView pedidos= findViewById(R.id.recycler);
+
+                Adaptadorrecibepedidos adaptador = new Adaptadorrecibepedidos( todoslospedidos,MainActivity.this);
+                pedidos.setAdapter(adaptador);
+                adaptador.notifyDataSetChanged();
+
+            } catch (JSONException e) {
+
+
+                Log.d("erororor",e.toString());
+            }
+
+
+        }
+
+    }
+    public class traerpedidosentregados extends AsyncTask<String, String, String> {
+
+        HttpURLConnection conne;
+        URL url = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                url = new URL("https://sodapop.pe/sugest/traertodoslopedidosentregados.php");
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return e.toString();
+            }
+            try {
+                conne = (HttpURLConnection) url.openConnection();
+                conne.setReadTimeout(READ_TIMEOUT);
+                conne.setConnectTimeout(CONNECTION_TIMEOUT);
+                conne.setRequestMethod("POST");
+                conne.setDoInput(true);
+                conne.setDoOutput(true);
+                // Append parameters to URL
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("nombre", params[0]);
+                String query = builder.build().getEncodedQuery();
+
+                // Open connection for sending data
+                OutputStream os = conne.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+                conne.connect();
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                return e1.toString();
+            }
+            try {
+                int response_code = conne.getResponseCode();
+
+                if (response_code == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = conne.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        result.append(line);
+
+                    }
+                    return (result.toString());
+
+                } else {
+                    return("Connection error");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return e.toString();
+            } finally {
+                conne.disconnect();
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("waaaaaaa",result);
+            //if(result.equals("no rows")) {
+            //}else{
+
+            //}
+            try {
+                JSONArray jArray = new JSONArray(result);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    PedidoRealmFirebase   pedidofirebase = new PedidoRealmFirebase
+                            (json_data.getInt("idpedido"),
+                                    json_data.getInt("idcliente"),
+                                    json_data.getInt("idmesa")
+                                    , json_data.getDouble("totalpedido")
+                                    ,json_data.getString("estadopedido"),
+                                    json_data.getString("fechapedido")
+                                    ,json_data.getInt("idusuario"),
+                                    json_data.getInt("idalmacen"),
+                                    json_data.getString("idfacebook"),
+                                    json_data.getString("observaciones")
+                                    ,json_data.getString("llevar")
+                                    ,json_data.getString("direccionllevar"),
+                                    json_data.getString("idfirebase"),
+                                    json_data.getString("monbredescuento")
+                                    ,json_data.getString("montodescuento")
+                                    ,json_data.getString("nombrecosto"),
+                                    json_data.getString("montocosto"),
+                                    json_data.getString("longitud")
+                                    ,json_data.getString("latitud"),
+                                    json_data.getString("pagocliente"),
+                                    json_data.getString("vuelto")
+                                    ,json_data.getString("telefono"),
+                                    json_data.getString("refrencias"),
+                                    json_data.getString("nombreusuariof"),
+                                    json_data.getString("idfacebook"));
+                    todoslospedidos.add(pedidofirebase);
+
+
+                }
+
+
+
+                int ere =todoslospedidos.size();
+
+                for(int a=0;a<ere;a++){
+
+                    realgrabarpedido(
+                            todoslospedidos.get(a).getIdpedido(),
+                            todoslospedidos.get(a).getIdcliente(),
+                            todoslospedidos.get(a).getIdmesa()
+                            ,todoslospedidos.get(a).getTotalpedido(),
+                            todoslospedidos.get(a).getEstadopedido(),
+                            todoslospedidos.get(a).getFechapedido()
+                            ,todoslospedidos.get(a).getIdusuario(),
+                            todoslospedidos.get(a).getIdalmacen()
+                            ,todoslospedidos.get(a).getIdfacebook()
+                            ,todoslospedidos.get(a).getDescripcionpedido(),
+                            todoslospedidos.get(a).getLlevar(),
+                            todoslospedidos.get(a).getDireccionallevar());
+                }
+                final RecyclerView pedidos= findViewById(R.id.recycler);
+
+                Adaptadorrecibepedidos adaptador = new Adaptadorrecibepedidos( todoslospedidos,MainActivity.this);
+                pedidos.setAdapter(adaptador);
+                adaptador.notifyDataSetChanged();
+
+            } catch (JSONException e) {
+
+
+                Log.d("erororor",e.toString());
+            }
+
+
+        }
+
+    }
+
+    }

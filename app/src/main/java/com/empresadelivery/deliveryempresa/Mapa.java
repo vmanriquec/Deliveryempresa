@@ -6,14 +6,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,13 +23,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -42,12 +40,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.PolyUtil;
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
-import java.util.Locale;
 
 import static android.Manifest.permission;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -77,7 +80,7 @@ public class Mapa extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
-
+Button atras=(Button) findViewById(R.id.atras);
         String longitudiso = getIntent().getStringExtra("longitud");
         String latitudiso = getIntent().getStringExtra("latitud");
         String nombreiso = getIntent().getStringExtra("nombre");
@@ -100,7 +103,14 @@ public class Mapa extends FragmentActivity
 
 
 
+atras.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
 
+        Intent intent = new Intent (v.getContext(), Manejodeusuarios.class);
+        startActivityForResult(intent, 0);
+    }
+});
     }
 
     @Override
@@ -110,6 +120,7 @@ checkPermissions();
         String latitudiso = getIntent().getStringExtra("latitud");
         String nombreiso = getIntent().getStringExtra("nombre");
         String dire = getIntent().getStringExtra("direccion");
+        String refe = getIntent().getStringExtra("referencia");
         direccion.setText(dire);
         float la = Float.parseFloat(latitudiso);
         float lon = Float.parseFloat(longitudiso);
@@ -127,7 +138,7 @@ checkPermissions();
 
                     .position(cliente)
                     .title(nombreiso)
-                    .snippet("aqui recibire mis pedidos :)")
+                    .snippet(refe)
 
                     .icon(bitmapDescriptorFromVector(this, R.drawable.ic_success))
                     .anchor(0.5f, 0.5f)
@@ -135,6 +146,45 @@ checkPermissions();
 
            // mapa.setInfoWindowAdapter(new Marketclaselocal(LayoutInflater.from(getApplicationContext())));
             marker.showInfoWindow();
+
+        Polyline line = mapa.addPolyline(new PolylineOptions()
+                .add(new LatLng(-11.495692495131408,-77.208248), new LatLng(la, lon))
+                .width(4)
+                .color(Color.RED));
+
+
+        String url ="https://maps.googleapis.com/maps/api/directions/json?origin=" +
+                ""+latitudiso+","+longitudiso+"&destination=-11.495692495131408,-77.208248";
+
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject        jso = new JSONObject(response);
+                    trazarRuta(jso);
+                    Log.i("jsonRuta: ",""+response);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+
+        });
+
+        queue.add(stringRequest);
+
+
+
+
 
 
         }
@@ -225,15 +275,48 @@ checkPermissions();
 
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
-        Drawable background = ContextCompat.getDrawable(context, R.drawable.referencia);
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.gpsc);
         background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
-        vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40, vectorDrawable.getIntrinsicHeight() + 20);
+        vectorDrawable.setBounds(40, 20, vectorDrawable.getIntrinsicWidth() + 40,
+                vectorDrawable.getIntrinsicHeight() + 20);
         Bitmap bitmap = Bitmap.createBitmap(background.getIntrinsicWidth(), background.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         background.draw(canvas);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
-}
 
+
+
+
+    private void trazarRuta(JSONObject jso) {
+
+        JSONArray jRoutes;
+        JSONArray jLegs;
+        JSONArray jSteps;
+
+        try {
+            jRoutes = jso.getJSONArray("routes");
+            for (int i = 0; i < jRoutes.length(); i++) {
+
+                jLegs = ((JSONObject) (jRoutes.get(i))).getJSONArray("legs");
+                for (int j = 0; j < jLegs.length(); j++) {
+                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    for (int k = 0; k < jSteps.length(); k++) {
+
+
+                        String polyline = "" + ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
+                        Log.i("end", "" + polyline);
+                        List<LatLng> list = PolyUtil.decode(polyline);
+                        mapa.addPolyline(new PolylineOptions().addAll(list).color(Color.RED).width(5));
+
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+}

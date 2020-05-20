@@ -2,65 +2,66 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
+    android:layout_height="match_parent">
+
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="0dp"
-        android:layout_height="82dp"
+        android:layout_width="406dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
         <MultiAutoCompleteTextView
             android:id="@+id/multiAutoCompleteTextView"
-            android:layout_width="313dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:hint="Busca un producto"
+            android:layout_width="335dp"
+            android:layout_height="49dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bordecuadradosuave"
+            android:hint="Busca un cliente"
+            android:paddingLeft="13dp"
             tools:ignore="LabelFor" />
 
         <Button
             android:id="@+id/todos"
-            android:layout_width="65dp"
-            android:layout_height="78dp"
-            android:layout_gravity="right|center_horizontal|center_vertical"
-            android:layout_marginLeft="5dp"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/usercomanda" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listadeclientes"
         android:layout_width="0dp"
-        android:layout_height="563dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:layout_constraintVertical_bias="0.162" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="53dp"
-        android:background="@color/accent"
-        android:orientation="horizontal"
+        android:layout_height="608dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.512" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/accent"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listadeclientes"
         app:layout_constraintVertical_bias="1.0">
 
         <Button
@@ -68,13 +69,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="descuentos" />
+            android:background="@color/trans"
+            android:text="descuentos"
+            android:textColor="@color/colortres" />
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="listousuario" />
+            android:background="@color/trans"
+            android:text="listo"
+            android:textColor="@color/colortres" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

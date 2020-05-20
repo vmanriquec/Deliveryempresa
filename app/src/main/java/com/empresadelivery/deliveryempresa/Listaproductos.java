@@ -1,5 +1,6 @@
 package com.empresadelivery.deliveryempresa;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -9,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +19,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.empresadelivery.deliveryempresa.adaptadores.Adaptadorclientes;
 import com.empresadelivery.deliveryempresa.adaptadores.Adaptadormaestraproducto;
+import com.empresadelivery.deliveryempresa.modelos.DescuentosRealm;
 import com.empresadelivery.deliveryempresa.modelos.Productos;
 
 import org.json.JSONArray;
@@ -35,6 +40,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class Listaproductos extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager lManager;
@@ -48,6 +56,8 @@ Button todos,nuevo;
         setContentView(R.layout.maestraproductos);
         todos=(Button)findViewById(R.id.todos);
 nuevo=(Button)findViewById(R.id.nuevoproductito);
+Button cremas=(Button)findViewById(R.id.cremas);
+
 
         MultiAutoCompleteTextView myMultiAutoCompleteTextView
                 = (MultiAutoCompleteTextView)findViewById(
@@ -95,7 +105,20 @@ nuevo=(Button)findViewById(R.id.nuevoproductito);
         new llenarautocomplete().execute("1");
 
         new traerproductosporidalmacenidfamilia().execute("1");
+cremas.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
 
+
+
+        final Dialog dialog = new Dialog(v.getRootView().getContext());
+        dialog.setContentView(R.layout.doalogodescuento);
+
+
+        dialog.show();
+
+    }
+});
     }
     private class traerproductospornombre extends AsyncTask<String, String, String> {
 
@@ -349,19 +372,11 @@ nuevo=(Button)findViewById(R.id.nuevoproductito);
                             new ArrayAdapter<String>(Listaproductos.this.getApplicationContext(),android.R.layout.simple_dropdown_item_1line,mylist));
                     myMultiAutoCompleteTextView.setTokenizer(
                             new MultiAutoCompleteTextView.CommaTokenizer());
-
-
-
                 } catch (JSONException e) {
-
-                }
-
+               }
             }
-
         }
-
     }
-
     private class traerproductosporidalmacenidfamilia extends AsyncTask<String, String, String> {
         ArrayList<Productos> people=new ArrayList<>();
         private String[] strArrData = {"No Suggestions"};
