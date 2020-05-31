@@ -73,7 +73,6 @@ public class Subirproductos extends AppCompatActivity {
     public static final int REQUEST_CODE_TAKE_PHOTO = 0 /*1*/;
     private String mCurrentPhotoPath;
     private Uri photoURI;
-    //ProgressDialog pdLoading = new ProgressDialog(getApplicationContext());
 
 
     SharedPreferences prefs;
@@ -104,9 +103,7 @@ guardarproducto.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
 
-        //pdLoading.setMessage("\tSubiendo Imagen");
-        //pdLoading.setCancelable(false);
-        //pdLoading.show();
+
         final FirebaseStorage storage= FirebaseStorage.getInstance();
 
         StorageReference storageRef = storage.getReference();
@@ -134,14 +131,17 @@ guardarproducto.setOnClickListener(new View.OnClickListener() {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
+
+
                 if (taskSnapshot.getMetadata() != null) {
                     if (taskSnapshot.getMetadata().getReference() != null) {
                         Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
                         result.addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
+
+
+
                                 String imageUrl = uri.toString();
 
                                 Log.d("imagen",imageUrl);
@@ -160,7 +160,7 @@ guardarproducto.setOnClickListener(new View.OnClickListener() {
 
 
                                 Spinner familia=(Spinner)findViewById(R.id.spinnerio2);
-                                String alf =familia.getItemAtPosition(almacen.getSelectedItemPosition()).toString();
+                                String alf =familia.getItemAtPosition(familia.getSelectedItemPosition()).toString();
                                 String meseif=alf;
                                 int gf= meseif.length();
                                 String mesif = meseif.substring(0,2);
@@ -170,7 +170,7 @@ guardarproducto.setOnClickListener(new View.OnClickListener() {
                                 String mesiof = meseif.substring(3,gf);
                                 String nombrefamilia=mesiof.trim();
 
-                                //pdLoading.dismiss();
+          //                      pdLoading.dismiss();
                                 Productoguardar pg=new Productoguardar(0,nombreproducto.getText().toString(),"1",Double.parseDouble(precioproducto.getText().toString())
                                         ,"no",Integer.parseInt(idfamilia),Double.parseDouble(descripcionproducto.getText().toString()),imageUrl,"no hay","sin foto","sin qr"
                                 ,1,ingredientes.getText().toString(),Integer.parseInt(idalmacen));
@@ -418,7 +418,7 @@ guardarproducto.setOnClickListener(new View.OnClickListener() {
 
         @Override
         protected String doInBackground(String... params) {
-            Spinner  spin=(Spinner) findViewById(R.id.spinnerio);
+            Spinner  spin=(Spinner) findViewById(R.id.spinnerio2);
             try {
                 url = new URL("https://www.sodapop.pe/sugest/apitraertodalasfamilias.php");
             } catch (MalformedURLException e) {

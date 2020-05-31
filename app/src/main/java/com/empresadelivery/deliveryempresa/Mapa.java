@@ -80,14 +80,14 @@ public class Mapa extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
-Button atras=(Button) findViewById(R.id.atras);
+        Button atras=(Button) findViewById(R.id.atras);
         String longitudiso = getIntent().getStringExtra("longitud");
         String latitudiso = getIntent().getStringExtra("latitud");
         String nombreiso = getIntent().getStringExtra("nombre");
         String dire = getIntent().getStringExtra("direccion");
         float la = Float.parseFloat(latitudiso);
         float lon = Float.parseFloat(longitudiso);
-         final LatLng cliente = new LatLng(la, lon);
+        final LatLng cliente = new LatLng(la, lon);
 
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.mapa);
@@ -103,19 +103,19 @@ Button atras=(Button) findViewById(R.id.atras);
 
 
 
-atras.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
+        atras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        Intent intent = new Intent (v.getContext(), Manejodeusuarios.class);
-        startActivityForResult(intent, 0);
-    }
-});
+                // Intent intent = new Intent (v.getContext(), Manejodeusuarios.class);
+                //startActivityForResult(intent, 0);
+            }
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-checkPermissions();
+        checkPermissions();
         String longitudiso = getIntent().getStringExtra("longitud");
         String latitudiso = getIntent().getStringExtra("latitud");
         String nombreiso = getIntent().getStringExtra("nombre");
@@ -126,26 +126,26 @@ checkPermissions();
         float lon = Float.parseFloat(longitudiso);
         final LatLng cliente = new LatLng(la, lon);
 
-            Toast.makeText(this, "Activa tu gps por favor", Toast.LENGTH_LONG).show();
-            mapa = googleMap;
-            mapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mapa.getUiSettings().setZoomControlsEnabled(true);
-            mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(cliente, 15));
-            //  mapa.setMyLocationEnabled(true);
-            // mapa.getUiSettings().setCompassEnabled(true);
+        Toast.makeText(this, "Activa tu gps por favor", Toast.LENGTH_LONG).show();
+        mapa = googleMap;
+        mapa.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mapa.getUiSettings().setZoomControlsEnabled(true);
+        mapa.moveCamera(CameraUpdateFactory.newLatLngZoom(cliente, 15));
+        //  mapa.setMyLocationEnabled(true);
+        // mapa.getUiSettings().setCompassEnabled(true);
 
-            Marker marker = mapa.addMarker(new MarkerOptions()
+        Marker marker = mapa.addMarker(new MarkerOptions()
 
-                    .position(cliente)
-                    .title(nombreiso)
-                    .snippet(refe)
+                .position(cliente)
+                .title(nombreiso)
+                .snippet(refe)
 
-                    .icon(bitmapDescriptorFromVector(this, R.drawable.ic_success))
-                    .anchor(0.5f, 0.5f)
-            );
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_success))
+                .anchor(0.5f, 0.5f)
+        );
 
-           // mapa.setInfoWindowAdapter(new Marketclaselocal(LayoutInflater.from(getApplicationContext())));
-            marker.showInfoWindow();
+        // mapa.setInfoWindowAdapter(new Marketclaselocal(LayoutInflater.from(getApplicationContext())));
+        marker.showInfoWindow();
 
         Polyline line = mapa.addPolyline(new PolylineOptions()
                 .add(new LatLng(-11.495692495131408,-77.208248), new LatLng(la, lon))
@@ -187,7 +187,7 @@ checkPermissions();
 
 
 
-        }
+    }
 
 
 
@@ -230,18 +230,18 @@ checkPermissions();
     private boolean checkPermissions() {
 
         if ((ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) &&
-        (ContextCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) ){
+                (ContextCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) ){
 
 
             return true;
 
         } else {
-     ActivityCompat.requestPermissions(this, new String[]{permission.ACCESS_FINE_LOCATION},REQUEST_FINE_LOCATION);
-                return false;
-
-            }
+            ActivityCompat.requestPermissions(this, new String[]{permission.ACCESS_FINE_LOCATION},REQUEST_FINE_LOCATION);
+            return false;
 
         }
+
+    }
 
     private void revaamapa() {
         Intent intent = new Intent(getApplicationContext(), Mapa.class);

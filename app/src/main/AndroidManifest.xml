@@ -48,6 +48,7 @@
         <activity android:name=".Listaproductos" />
         <activity android:name=".Subirproductos" />
         <activity android:name=".Mapa" />
+        <activity android:name=".Map" />
         <activity android:name=".Mostrarpedidos" />
         <activity android:name=".MainActivity">
             <intent-filter>

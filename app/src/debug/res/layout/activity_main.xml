@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorprincipalamarillo"
+        android:background="@drawable/btn_orange_2"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,34 +30,42 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="true"
-                android:text="Activo" />
+                android:text="Activo"
+                android:textColor="@color/colortres" />
 
             <RadioButton
                 android:id="@+id/entregada"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Entregada" />
+                android:text="Entregado"
+                android:textColor="@color/colortres" />
 
             <RadioButton
                 android:id="@+id/rechazada"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Rechazada" />
+                android:shadowColor="@color/fondito"
+                android:text="Rechazado"
+                android:textColor="@color/colortres"
+                android:textColorHighlight="@color/fbutton_color_wisteria"
+                android:textColorHint="@color/abc_search_url_text_normal"
+                android:textColorLink="@color/coloramarilloprincipal" />
 
             <RadioButton
                 android:id="@+id/todasordenes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Todas" />
+                android:text="Todos"
+                android:textColor="@color/colortres" />
         </RadioGroup>
 
         <Button
             android:id="@+id/buscarpedido"
-            android:layout_width="46dp"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="29dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
@@ -65,6 +73,20 @@
             android:layout_weight="1"
             android:background="@drawable/places_ic_search" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/quesemuestra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@color/chatotro"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.054" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
